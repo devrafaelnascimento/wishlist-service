@@ -61,7 +61,7 @@ Segue abaixo a API disponível no projeto:
     clientId = fd4751d0-5296-4592-a454-71e35b888da5
     productId = 8773ac0c-e025-4243-a3df-eaece6a55311
     ```
- - /wishlist/delete-product (POST)
+ - /wishlist/get-product (POST)
      - Espera um atributo para ser critérios de busca no body da requisição, exemplo:
     ```
     {
