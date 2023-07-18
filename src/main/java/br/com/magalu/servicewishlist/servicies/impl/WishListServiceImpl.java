@@ -1,5 +1,6 @@
 package br.com.magalu.servicewishlist.servicies.impl;
 
+import br.com.magalu.servicewishlist.entities.ClientEntity;
 import br.com.magalu.servicewishlist.servicies.WishListService;
 import br.com.magalu.servicewishlist.entities.WishListEntity;
 import br.com.magalu.servicewishlist.repositories.ClientRepository;
@@ -42,8 +43,7 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public void deletProductByClientInWishList(UUID clientId, UUID productId) {
-        clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+        getClientById(clientId);
 
         final var wishlistItem = repository.findByClientIdAndProductId(clientId, productId)
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado na wishlist do cliente"));
@@ -53,13 +53,17 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public WishListEntity searchProductByClientInWishList(UUID clientId, String productName) {
-        clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+        getClientById(clientId);
 
         final var wishlistItem = repository.searchProductByClientInWishList(clientId, productName)
 
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado na wishlist do cliente"));
         return (WishListEntity) wishlistItem;
+    }
+
+    private ClientEntity getClientById(UUID clientId) {
+        return clientRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
     }
 
 }
