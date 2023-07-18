@@ -40,7 +40,7 @@ Pronto. A aplicação está disponível em http://localhost:8080
 
 O projeto disponibiliza uma APIs WishList, onde utiliza o padrão Rest de comunicação, produzindo e consumindo arquivos no formato JSON.
 
-Segue abaixo as APIs disponíveis no projeto:
+Segue abaixo a API disponível no projeto:
 
 #### Wishlist
 
