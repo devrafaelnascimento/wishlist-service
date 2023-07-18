@@ -1,0 +1,149 @@
+{
+	"info": {
+		"_postman_id": "2c19bf19-afa5-4a0e-a6a3-4a10168912f2",
+		"name": "WISHLIST MAGALU",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27578235"
+	},
+	"item": [
+		{
+			"name": "GET WISHLIST BY USER",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/wishlist?clientId=fd4751d0-5296-4592-a454-71e35b888da5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wishlist"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "fd4751d0-5296-4592-a454-71e35b888da5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET PRODUCT BY CLIENT",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "productName",
+						"value": "Armario_de_cozinha",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n{\n   \"productName\" : \"Televisão\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/wishlist/get-product?clientId=fd4751d0-5296-4592-a454-71e35b888da5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wishlist",
+						"get-product"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "fd4751d0-5296-4592-a454-71e35b888da5"
+						},
+						{
+							"key": "productId",
+							"value": "Armario de cozinha",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE PRODUCT BY WISHLIST CLIENT",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/wishlist/delete-product?clientId=fd4751d0-5296-4592-a454-71e35b888da5&productId=a0dd0969-23e7-4b97-b784-53b9ddb2d240",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wishlist",
+						"delete-product"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "fd4751d0-5296-4592-a454-71e35b888da5"
+						},
+						{
+							"key": "productId",
+							"value": "a0dd0969-23e7-4b97-b784-53b9ddb2d240"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADD PRODUCT WISHLIST BY CLIENT",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "request",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/wishlist/add-product?clientId=fd4751d0-5296-4592-a454-71e35b888da5&productId=47ab2c39-dcaa-4195-86cb-bacfe19e579f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wishlist",
+						"add-product"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "fd4751d0-5296-4592-a454-71e35b888da5"
+						},
+						{
+							"key": "productId",
+							"value": "47ab2c39-dcaa-4195-86cb-bacfe19e579f"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
