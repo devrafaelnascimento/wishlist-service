@@ -38,7 +38,7 @@ Pronto. A aplicação está disponível em http://localhost:8080
 
 ## APIs
 
-O projeto disponibiliza algumas APIs em 3 contextos diferentes: Customer, Carriers e BilLs, onde utilizam o padrão Rest de comunicação, produzindo e consumindo arquivos no formato JSON.
+O projeto disponibiliza uma APIs WishList, onde utiliza o padrão Rest de comunicação, produzindo e consumindo arquivos no formato JSON.
 
 Segue abaixo as APIs disponíveis no projeto:
 
