@@ -40,34 +40,9 @@ Pronto. A aplicação está disponível em http://localhost:8080
 
 O projeto disponibiliza uma APIs WishList, onde utiliza o padrão Rest de comunicação, produzindo e consumindo arquivos no formato JSON.
 
-Segue abaixo a API disponível no projeto:
+Segue abaixo o link do swagger do projeto:
 
-#### Wishlist
-
- - /wishlist (GET)
-    - Espera um atributo para ser critério de busca no parametro da requisição, exemplo:
-    ```
-    clientId = fd4751d0-5296-4592-a454-71e35b888da5
-    ```
- - /wishlist/add-product (POST)
-    - Espera dois atributos para serem critério de busca nos parametros da requisição, exemplo:
-    ```
-    clientId = fd4751d0-5296-4592-a454-71e35b888da5
-    productId = 8773ac0c-e025-4243-a3df-eaece6a55311
-    ```
- - /wishlist/delete-product (DELETE)
- -  Espera dois atributos para serem critério de busca nos parametros da requisição, exemplo:
-    ```
-    clientId = fd4751d0-5296-4592-a454-71e35b888da5
-    productId = 8773ac0c-e025-4243-a3df-eaece6a55311
-    ```
- - /wishlist/get-product (POST)
-     - Espera um atributo para ser critérios de busca no body da requisição, exemplo:
-    ```
-    {
-      "productName" : "Televisão"
-    }
-    ```
+### http://localhost:8080/swagger-ui.html#
 
     # Collection para importar no POSTMAN
    - No diretório abaixo existe uma collection criada para consumir todos os endpoints sitados na documentação
