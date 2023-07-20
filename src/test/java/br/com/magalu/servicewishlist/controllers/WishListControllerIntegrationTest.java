@@ -34,7 +34,7 @@ class WishListControllerIntegrationTest {
         final var clientId = UUID.fromString("fd4751d0-5296-4592-a454-71e35b888da5");
 
         final var resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/wishlist")
-                .param("clientId", clientId.toString())
+                .header("clientId", clientId.toString())
                 .contentType(MediaType.APPLICATION_JSON));
 
         resultActions.andExpect(MockMvcResultMatchers.status().isOk());
@@ -44,26 +44,33 @@ class WishListControllerIntegrationTest {
     void testAddProductInWishListOfClient() throws Exception {
         final var clientId = UUID.fromString("fd4751d0-5296-4592-a454-71e35b888da5");
         final var productId = UUID.fromString("a0dd0969-23e7-4b97-b784-53b9ddb2d240");
+        final var requestBody = "{\"productId\": \"" + productId + "\"}";
 
-        final var resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/wishlist/add-product")
-                .param("clientId", clientId.toString())
-                .param("productId", productId.toString())
-                .contentType(MediaType.APPLICATION_JSON));
-
-        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.post("/wishlist/add-product")
+                        .header("clientId", clientId.toString())
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.client.id").value(clientId.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.product.id").value(productId.toString()))
+                .andReturn();
     }
 
     @Test
     void testDeleteProductInWishListOfClient() throws Exception {
         final var clientId = UUID.fromString("fd4751d0-5296-4592-a454-71e35b888da5");
         final var productId = UUID.fromString("a0dd0969-23e7-4b97-b784-53b9ddb2d240");
+        String requestBody = "{\"productId\": \"" + productId + "\"}";
 
-        final var resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/wishlist/delete-product")
-                .param("clientId", clientId.toString())
-                .param("productId", productId.toString())
-                .contentType(MediaType.APPLICATION_JSON));
-
-        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/wishlist/delete-product")
+                        .header("clientId", clientId.toString())
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Produto removido da wishlist com sucesso"))
+                .andReturn();
     }
 
     @Test
@@ -72,7 +79,7 @@ class WishListControllerIntegrationTest {
         final var productName = "{\"productName\":\"Televisão\"}";
 
         final var resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/wishlist/get-product")
-                .param("clientId", clientId.toString())
+                .header("clientId", clientId.toString())
                 .content(productName)
                 .contentType(MediaType.APPLICATION_JSON));
 

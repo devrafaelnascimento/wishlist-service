@@ -7,12 +7,10 @@ import br.com.magalu.servicewishlist.servicies.WishListService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,20 +48,21 @@ class WishListControllerTest {
 
         ResponseEntity<List<WishListResponse>> response = controller.getWishListOfClient(client.getId());
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Mockito.verify(service, Mockito.times(1)).findAllByClientId(client.getId());
     }
 
     @Test
-    void addProductInWishListOfCLient() {
-        final var wishList = buildWishList();
+    void addProductInWishListOfCLient() throws JsonProcessingException {
+        final var wishlist = buildWishList();
         final var client = buildClient();
         final var product = buildProduct();
+        final var requestBody = "{\"productId\": \"" + product.getId() + "\"}";
 
-        Mockito.when(service.addProductInWishListOfClient(any(UUID.class), any(UUID.class))).thenReturn(wishList);
+        Mockito.when(service.addProductInWishListOfClient(any(UUID.class), any(UUID.class))).thenReturn(wishlist);
 
-        ResponseEntity<WishListResponse> response = controller.addProductInWishListOfCLient(client.getId(), product.getId());
+        ResponseEntity<WishListResponse> response = controller.addProductInWishListOfCLient(client.getId(), requestBody);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
@@ -72,16 +72,17 @@ class WishListControllerTest {
     }
 
     @Test
-    void deleteProductInWishListOfClient() {
+    void deleteProductInWishListOfClient() throws JsonProcessingException {
         final var client = buildClient();
         final var product = buildProduct();
+        final var requestBody = "{\"productId\": \"" + product.getId() + "\"}";
 
         Mockito.doNothing().when(service).deletProductByClientInWishList(any(UUID.class), any(UUID.class));
 
-        ResponseEntity<String> response = controller.deleteProductInWishListOfClient(client.getId(), product.getId());
+        ResponseEntity<String> response = controller.deleteProductInWishListOfClient(client.getId(), requestBody);
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertEquals("Produto removido da wishlist com sucesso", response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Produto removido da wishlist com sucesso", response.getBody());
 
         Mockito.verify(service, Mockito.times(1)).deletProductByClientInWishList(client.getId(), product.getId());
 

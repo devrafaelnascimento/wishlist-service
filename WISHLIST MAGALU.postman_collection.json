@@ -10,9 +10,15 @@
 			"name": "GET WISHLIST BY USER",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "clientId",
+						"value": "fd4751d0-5296-4592-a454-71e35b888da5",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:8080/wishlist?clientId=fd4751d0-5296-4592-a454-71e35b888da5",
+					"raw": "http://localhost:8080/wishlist",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -20,12 +26,6 @@
 					"port": "8080",
 					"path": [
 						"wishlist"
-					],
-					"query": [
-						{
-							"key": "clientId",
-							"value": "fd4751d0-5296-4592-a454-71e35b888da5"
-						}
 					]
 				}
 			},
@@ -37,10 +37,9 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "productName",
-						"value": "Armario_de_cozinha",
-						"type": "text",
-						"disabled": true
+						"key": "clientId",
+						"value": "fd4751d0-5296-4592-a454-71e35b888da5",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -53,7 +52,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/wishlist/get-product?clientId=fd4751d0-5296-4592-a454-71e35b888da5",
+					"raw": "http://localhost:8080/wishlist/get-product",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -62,17 +61,6 @@
 					"path": [
 						"wishlist",
 						"get-product"
-					],
-					"query": [
-						{
-							"key": "clientId",
-							"value": "fd4751d0-5296-4592-a454-71e35b888da5"
-						},
-						{
-							"key": "productId",
-							"value": "Armario de cozinha",
-							"disabled": true
-						}
 					]
 				}
 			},
@@ -82,9 +70,24 @@
 			"name": "DELETE PRODUCT BY WISHLIST CLIENT",
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "clientId",
+						"value": "fd4751d0-5296-4592-a454-71e35b888da5",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\" : \"4d2c24e5-961e-42cb-a09f-84e96a2f0d44\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:8080/wishlist/delete-product?clientId=fd4751d0-5296-4592-a454-71e35b888da5&productId=a0dd0969-23e7-4b97-b784-53b9ddb2d240",
+					"raw": "http://localhost:8080/wishlist/delete-product",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -93,16 +96,6 @@
 					"path": [
 						"wishlist",
 						"delete-product"
-					],
-					"query": [
-						{
-							"key": "clientId",
-							"value": "fd4751d0-5296-4592-a454-71e35b888da5"
-						},
-						{
-							"key": "productId",
-							"value": "a0dd0969-23e7-4b97-b784-53b9ddb2d240"
-						}
 					]
 				}
 			},
@@ -114,14 +107,22 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "request",
-						"value": "",
-						"type": "text",
-						"disabled": true
+						"key": "clientId",
+						"value": "fd4751d0-5296-4592-a454-71e35b888da5",
+						"type": "text"
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\" : \"4d2c24e5-961e-42cb-a09f-84e96a2f0d44\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:8080/wishlist/add-product?clientId=fd4751d0-5296-4592-a454-71e35b888da5&productId=47ab2c39-dcaa-4195-86cb-bacfe19e579f",
+					"raw": "http://localhost:8080/wishlist/add-product",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -130,16 +131,6 @@
 					"path": [
 						"wishlist",
 						"add-product"
-					],
-					"query": [
-						{
-							"key": "clientId",
-							"value": "fd4751d0-5296-4592-a454-71e35b888da5"
-						},
-						{
-							"key": "productId",
-							"value": "47ab2c39-dcaa-4195-86cb-bacfe19e579f"
-						}
 					]
 				}
 			},

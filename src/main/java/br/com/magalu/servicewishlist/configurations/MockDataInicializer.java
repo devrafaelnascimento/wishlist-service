@@ -152,11 +152,16 @@ public class MockDataInicializer implements ApplicationRunner {
         product20.setName("Maquina de lavar roupa");
         product20.setPrice(2499.99);
 
+        final var product21 = new ProductEntity();
+        product21.setId(UUID.fromString("3b3d3771-91cf-477c-a6cd-c91ebff89828"));
+        product21.setName("Lavadora a jato");
+        product21.setPrice(2499.99);
+
         productRepository.saveAll(Arrays.asList(product1, product2, product3,
                 product4, product5, product6, product7, product8,
                 product9, product10, product11, product12, product13,
                 product14, product15, product16, product17, product18,
-                product19, product20));
+                product19, product20, product21));
 
         // MOCK WISHLIST CLIENT RAFAEL NASCIMENTO
 
@@ -192,7 +197,7 @@ public class MockDataInicializer implements ApplicationRunner {
         wishList6.setClient(client2);
         wishList6.setProduct(product10);
 
-        wishListRepository.saveAll(Arrays.asList(wishList1, wishList1,
+        wishListRepository.saveAll(Arrays.asList(wishList1, wishList2,
                 wishList3, wishList4,
                 wishList5, wishList6));
     }

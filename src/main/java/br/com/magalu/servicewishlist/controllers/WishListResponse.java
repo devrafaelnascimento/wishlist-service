@@ -13,6 +13,6 @@ import java.util.UUID;
 public class WishListResponse {
 
     private UUID id;
-    private ClientEntity clientId;
-    private ProductEntity productId;
+    private ClientEntity client;
+    private ProductEntity product;
 }

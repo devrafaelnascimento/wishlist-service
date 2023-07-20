@@ -6,6 +6,8 @@ import br.com.magalu.servicewishlist.entities.WishListEntity;
 import br.com.magalu.servicewishlist.repositories.ClientRepository;
 import br.com.magalu.servicewishlist.repositories.ProductRepository;
 import br.com.magalu.servicewishlist.repositories.WishListRepository;
+import br.com.magalu.servicewishlist.servicies.exceptions.ClientNotFoundException;
+import br.com.magalu.servicewishlist.servicies.exceptions.ProductNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class WishListServiceImplTest {
@@ -44,12 +48,12 @@ class WishListServiceImplTest {
 
         Mockito.when(repository.findAllByClientId(any(UUID.class))).thenReturn(List.of(wishList));
 
-        List<WishListEntity> result = service.findAllByClientId(client.getId());
+        final var result = service.findAllByClientId(client.getId());
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1, result.size());
 
-        Mockito.verify(repository, Mockito.times(1)).findAllByClientId(client.getId());
+        Mockito.verify(repository, times(1)).findAllByClientId(client.getId());
     }
 
     @Test
@@ -67,51 +71,34 @@ class WishListServiceImplTest {
                     return wishlistItem;
                 });
 
-        WishListEntity result = service.addProductInWishListOfClient(client.getId(), product.getId());
+        final var result = service.addProductInWishListOfClient(client.getId(), product.getId());
 
         Assertions.assertNotNull(result);
         Assertions.assertNotNull(result.getId());
         Assertions.assertEquals(client.getId(), result.getClient().getId());
         Assertions.assertEquals(product.getId(), result.getProduct().getId());
 
-        Mockito.verify(clientRepository, Mockito.times(1)).findById(client.getId());
-        Mockito.verify(productRepository, Mockito.times(1)).findById(product.getId());
-        Mockito.verify(repository, Mockito.times(1)).save(any(WishListEntity.class));
+        Mockito.verify(clientRepository, times(1)).findById(client.getId());
+        Mockito.verify(productRepository, times(1)).findById(product.getId());
+        Mockito.verify(repository, times(1)).save(any(WishListEntity.class));
     }
 
     @Test
     void deletProductByClientInWishList() {
         final var client = buildClient();
         final var product = buildProduct();
-
-        WishListEntity wishlistItem = new WishListEntity();
-        wishlistItem.setClient(client);
-        wishlistItem.setProduct(product);
+        final var wishlistItem = buildWishList();
 
         Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(client));
-        Mockito.when(repository.findByClientIdAndProductId(client.getId(), product.getId())).thenReturn(Optional.of(wishlistItem));
+        Mockito.when(productRepository.findById(any(UUID.class))).thenReturn(Optional.of(product));
+        Mockito.when(repository.findByClientIdAndProductId(any(UUID.class), any(UUID.class))).thenReturn(Optional.of(wishlistItem));
 
         service.deletProductByClientInWishList(client.getId(), product.getId());
 
-        Mockito.verify(clientRepository, Mockito.times(1)).findById(client.getId());
-        Mockito.verify(repository, Mockito.times(1)).findByClientIdAndProductId(client.getId(), product.getId());
-        Mockito.verify(repository, Mockito.times(1)).delete(wishlistItem);
-    }
-
-    @Test
-    void testDeletProductByClientInWishList_ClientNotFound() {
-        final var client = buildClient();
-        final var product = buildProduct();
-
-        Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.deletProductByClientInWishList(client.getId(), product.getId());
-        });
-
-        Mockito.verify(clientRepository, Mockito.times(1)).findById(client.getId());
-        Mockito.verify(repository, Mockito.never()).findByClientIdAndProductId(Mockito.any(), Mockito.any());
-        Mockito.verify(repository, Mockito.never()).delete(Mockito.any(WishListEntity.class));
+        Mockito.verify(clientRepository, times(1)).findById(client.getId());
+        Mockito.verify(productRepository, times(1)).findById(product.getId());
+        Mockito.verify(repository, times(1)).findByClientIdAndProductId(client.getId(), product.getId());
+        Mockito.verify(repository, times(1)).delete(wishlistItem);
     }
 
     @Test
@@ -120,15 +107,35 @@ class WishListServiceImplTest {
         final var product = buildProduct();
 
         Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(client));
-        Mockito.when(repository.findByClientIdAndProductId(any(UUID.class), any(UUID.class))).thenReturn(Optional.empty());
+        Mockito.when(productRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(ProductNotFoundException.class, () -> {
             service.deletProductByClientInWishList(client.getId(), product.getId());
         });
 
-        Mockito.verify(clientRepository, Mockito.times(1)).findById(client.getId());
-        Mockito.verify(repository, Mockito.times(1)).findByClientIdAndProductId(client.getId(), product.getId());
-        Mockito.verify(repository, Mockito.never()).delete(Mockito.any(WishListEntity.class));
+        Mockito.verify(clientRepository, times(1)).findById(client.getId());
+        Mockito.verify(productRepository, times(1)).findById(product.getId());
+        Mockito.verify(repository, never()).findByClientIdAndProductId(any(), any());
+        Mockito.verify(repository, never()).delete(any());
+    }
+
+    @Test
+    public void testDeleteProductByClientInWishList_WishlistItemNotFound() {
+        final var client = buildClient();
+        final var product = buildProduct();
+
+        Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(client));
+        Mockito.when(productRepository.findById(any(UUID.class))).thenReturn(Optional.of(product));
+        Mockito.when(repository.findByClientIdAndProductId(any(UUID.class), any(UUID.class))).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class, () -> {
+            service.deletProductByClientInWishList(client.getId(), product.getId());
+        });
+
+        Mockito.verify(clientRepository, times(1)).findById(client.getId());
+        Mockito.verify(productRepository, times(1)).findById(product.getId());
+        Mockito.verify(repository, times(1)).findByClientIdAndProductId(client.getId(), product.getId());
+        Mockito.verify(repository, never()).delete(any());
     }
 
     @Test
@@ -137,51 +144,58 @@ class WishListServiceImplTest {
         final var client = buildClient();
         final var productName = "Monitor";
 
-
-
         Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(client));
         Mockito.when(repository.searchProductByClientInWishList(any(UUID.class), any(String.class))).thenReturn(Optional.of(wishlistItem));
 
-        WishListEntity result = service.searchProductByClientInWishList(client.getId(), productName);
+        final var result = service.searchProductByClientInWishList(client.getId(), productName);
 
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(wishlistItem.getId(), result.getId());
+        Mockito.verify(clientRepository, times(1)).findById(client.getId());
+        Mockito.verify(repository, times(1)).searchProductByClientInWishList(client.getId(), productName);
 
-        Mockito.verify(clientRepository, Mockito.times(1)).findById(client.getId());
-        Mockito.verify(repository, Mockito.times(1)).searchProductByClientInWishList(client.getId(), productName);
+        assertEquals(wishlistItem, result);
     }
 
     @Test
-    void testSearchProductByClientInWishList_ClientNotFound() {
-        final var client = buildClient();
-        final var productName = "Monitor";
-
-        Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.searchProductByClientInWishList(client.getId(), productName);
-        });
-
-        Mockito.verify(clientRepository, Mockito.times(1)).findById(client.getId());
-        Mockito.verify(repository, Mockito.never()).searchProductByClientInWishList(Mockito.any(), Mockito.any());
-    }
-
-    @Test
-    void testSearchProductByClientInWishList_ProductNotFound() {
+    public void testSearchProductByClientInWishList_ProductNotFound() {
         final var client = buildClient();
         final var productName = "Monitor";
 
         Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(client));
         Mockito.when(repository.searchProductByClientInWishList(any(UUID.class), any(String.class))).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(ProductNotFoundException.class, () -> {
             service.searchProductByClientInWishList(client.getId(), productName);
         });
 
-        Mockito.verify(clientRepository, Mockito.times(1)).findById(client.getId());
-        Mockito.verify(repository, Mockito.times(1)).searchProductByClientInWishList(client.getId(), productName);
+        Mockito.verify(clientRepository, times(1)).findById(client.getId());
+        Mockito.verify(repository, times(1)).searchProductByClientInWishList(client.getId(), productName);
     }
 
+    @Test
+    public void testGetClientById_Success() {
+        final var client = buildClient();
+
+        Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(client));
+
+        final var result = service.getClientById(client.getId());
+
+        Mockito.verify(clientRepository, times(1)).findById(client.getId());
+
+        assertEquals(client, result);
+    }
+
+    @Test
+    public void testGetClientById_ClientNotFound() {
+        final var client = buildClient();
+
+        Mockito.when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+
+        assertThrows(ClientNotFoundException.class, () -> {
+            service.getClientById(client.getId());
+        });
+
+        Mockito.verify(clientRepository, times(1)).findById(client.getId());
+    }
 
     private WishListEntity buildWishList() {
         final var wishList = new WishListEntity();

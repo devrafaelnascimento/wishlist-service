@@ -17,4 +17,5 @@ public interface WishListRepository extends MongoRepository<WishListEntity, UUID
     @Query("{ 'client.id' : ?0, 'product.name' : ?1 }")
     Optional<Object> searchProductByClientInWishList(UUID clientId, String productName);
 
+    long countByClientId(UUID clientId);
 }
